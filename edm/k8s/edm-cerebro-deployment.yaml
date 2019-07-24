@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm-cerebro
+  name: edm-cerebro
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm-cerebro
+    spec:
+      containers:
+      - env:
+        - name: ELASTICSEARCH_HOST
+          value: http://edm-elasticsearch:9200
+        image: elastest/edm-cerebro:latest
+        name: edm-cerebro
+        resources: {}
+        tty: true
+        volumeMounts:
+        - mountPath: /opt/cerebro-0.6.5/conf
+          name: edm-cerebro-claim0
+        - mountPath: /opt/cerebro-0.6.5/logs
+          name: edm-cerebro-claim1
+      restartPolicy: Always
+      volumes:
+      - name: edm-cerebro-claim0
+        persistentVolumeClaim:
+          claimName: edm-cerebro-claim0
+      - name: edm-cerebro-claim1
+        persistentVolumeClaim:
+          claimName: edm-cerebro-claim1
+status: {}

@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm
+  name: edm
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm
+    spec:
+      containers:
+      - env:
+        - name: ET_EDM_ALLUXIO_API
+          value: http://edm-alluxio-master:19999/
+        - name: ET_EDM_API
+          value: http://edm:37003/
+        - name: ET_EDM_ELASTICSEARCH_API
+          value: http://edm-elasticsearch:9200/
+        - name: ET_EDM_MYSQL_HOST
+          value: edm-mysql
+        - name: ET_EDM_MYSQL_PORT
+          value: "3306"
+        - name: ET_EIM_API
+          value: http://eim:37004/
+        - name: ET_EMP_API
+          value: http://eim:37001/
+        - name: ET_EMP_INFLUXDB_API
+          value: http://emp-influxdb:8086/
+        - name: ET_EMP_INFLUXDB_GRAPHITE_PORT
+          value: "2003"
+        - name: ET_EMP_INFLUXDB_HOST
+          value: emp-influxdb
+        - name: ET_EPM_API
+          value: http://epm:37002/
+        - name: ET_ESM_API
+          value: http://esm:37005/
+        - name: ET_ETM_API
+          value: http://etm:37006/
+        - name: ET_ETM_LSBEATS_HOST
+          value: etm-beats
+        - name: ET_ETM_LSBEATS_PORT
+          value: "5044"
+        - name: ET_ETM_LSHTTP_API
+          value: http://etm-logstash:5002/
+        - name: ET_ETM_RABBIT_HOST
+          value: etm-rabbitmq
+        - name: ET_ETM_RABBIT_PORT
+          value: "5672"
+        image: elastest/edm:latest
+        name: edm
+        ports:
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/local/tomcat/webapps
+          name: edm-claim0
+        - mountPath: /opt/alluxio/conf
+          name: edm-claim1
+        - mountPath: /backup
+          name: edm-claim2
+      restartPolicy: Always
+      volumes:
+      - name: edm-claim0
+        persistentVolumeClaim:
+          claimName: edm-claim0
+      - name: edm-claim1
+        persistentVolumeClaim:
+          claimName: edm-claim1
+      - name: edm-claim2
+        persistentVolumeClaim:
+          claimName: edm-claim2
+status: {}

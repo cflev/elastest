@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm-hdfs-namenode
+  name: edm-hdfs-namenode
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm-hdfs-namenode
+    spec:
+      containers:
+      - args:
+        - sh
+        - -c
+        - /namenode.sh
+        image: elastest/edm-hadoop:latest
+        name: edm-hdfs-namenode
+        resources: {}
+        securityContext:
+          privileged: true
+      hostname: edm-hdfs-namenode
+      restartPolicy: Always
+status: {}

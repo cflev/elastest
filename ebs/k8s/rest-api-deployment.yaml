@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rest-api
+  name: rest-api
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rest-api
+    spec:
+      containers:
+      - env:
+        - name: EBS_PORT
+          value: "5000"
+        - name: EBS_SPARK_MASTER_URL
+          value: http://sparkmaster:8080/
+        image: elastest/ebs:latest
+        name: restapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+      restartPolicy: Always
+status: {}

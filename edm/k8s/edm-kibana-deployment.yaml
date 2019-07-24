@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm-kibana
+  name: edm-kibana
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm-kibana
+    spec:
+      containers:
+      - env:
+        - name: ES_JAVA_OPTS
+          value: -Xmx256m -Xms256m
+        - name: discovery.type
+          value: zen
+        - name: discovery.zen.ping.unicast.hosts
+          value: edm-elasticsearch
+        image: elastest/edm-kibana:latest
+        name: edm-kibana
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/share/kibana/config
+          name: edm-kibana-claim0
+      restartPolicy: Always
+      volumes:
+      - name: edm-kibana-claim0
+        persistentVolumeClaim:
+          claimName: edm-kibana-claim0
+status: {}

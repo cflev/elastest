@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: esnode
+  name: esnode
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: esnode
+    spec:
+      containers:
+      - env:
+        - name: ES_JAVA_OPTS
+          value: -Xmx2g -Xms2g
+        - name: discovery.type
+          value: zen
+        - name: discovery.zen.minimum_master_nodes
+          value: "2"
+        - name: discovery.zen.ping.unicast.hosts
+          value: edm-elasticsearch
+        image: elastest/edm-elasticsearch:latest
+        name: esnode
+        resources: {}
+        volumeMounts:
+        - mountPath: /backup
+          name: esbackup
+        - mountPath: /usr/share/elasticsearch/data
+          name: esdata2
+      hostname: esnode
+      restartPolicy: Always
+      volumes:
+      - name: esbackup
+        persistentVolumeClaim:
+          claimName: esbackup
+      - name: esdata2
+        persistentVolumeClaim:
+          claimName: esdata2
+status: {}

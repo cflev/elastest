@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sparkworker
+  name: sparkworker
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: sparkworker
+    spec:
+      containers:
+      - args:
+        - /usr/bin/supervisord
+        - --configuration=/opt/conf/slave.conf
+        image: elastest/ebs-spark:latest
+        name: sparkworker
+        ports:
+        - containerPort: 8081
+        resources: {}
+      restartPolicy: Always
+status: {}

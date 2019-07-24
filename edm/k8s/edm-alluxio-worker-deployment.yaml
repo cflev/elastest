@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm-alluxio-worker
+  name: edm-alluxio-worker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm-alluxio-worker
+    spec:
+      containers:
+      - args:
+        - worker
+        env:
+        - name: ALLUXIO_MASTER_HOSTNAME
+          value: edm-alluxio-master
+        - name: ALLUXIO_RAM_FOLDER
+          value: /mnt/ramdisk
+        - name: ALLUXIO_UNDERFS_ADDRESS
+          value: /underStorage
+        - name: ALLUXIO_WORKER_MEMORY_SIZE
+          value: 1GB
+        image: elastest/edm-alluxio:latest
+        name: edm-alluxio-worker
+        resources: {}
+        volumeMounts:
+        - mountPath: /underStorage
+          name: edm-alluxio-worker-claim0
+      restartPolicy: Always
+      volumes:
+      - name: edm-alluxio-worker-claim0
+        persistentVolumeClaim:
+          claimName: edm-alluxio-worker-claim0
+status: {}

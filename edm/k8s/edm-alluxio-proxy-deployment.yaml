@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    io.elastest.type: core
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: edm-alluxio-proxy
+  name: edm-alluxio-proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: edm-alluxio-proxy
+    spec:
+      containers:
+      - args:
+        - proxy
+        env:
+        - name: ALLUXIO_MASTER_HOSTNAME
+          value: edm-alluxio-master
+        image: elastest/edm-alluxio:latest
+        name: edm-alluxio-proxy
+        resources: {}
+        volumeMounts:
+        - mountPath: /underStorage
+          name: edm-alluxio-proxy-claim0
+      restartPolicy: Always
+      volumes:
+      - name: edm-alluxio-proxy-claim0
+        persistentVolumeClaim:
+          claimName: edm-alluxio-proxy-claim0
+status: {}
