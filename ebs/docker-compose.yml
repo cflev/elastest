@@ -1,0 +1,50 @@
+version: '2.1'
+
+services:
+  sparkmaster:
+    image: elastest/ebs-spark:latest
+    container_name: sparkmaster
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    # volumes:
+    #   - ./spark/alluxio_conf:/opt/alluxio/conf
+    #   - ./spark/spark_conf:/opt/spark/conf
+    #   - ./spark/hadoop_conf:/usr/local/hadoop/etc/hadoop
+    command: ["/usr/bin/supervisord", "--configuration=/opt/conf/master.conf"]
+    hostname: sparkmaster
+    networks:
+      - elastest
+
+  sparkworker:
+    image: elastest/ebs-spark:latest
+    depends_on:
+      - sparkmaster
+    ports:
+      - "8081"
+    # volumes:
+    #   - ./spark/alluxio_conf:/opt/alluxio/conf
+    #   - ./spark/spark_conf:/opt/spark/conf
+    #   - ./spark/hadoop_conf:/usr/local/hadoop/etc/hadoop
+    command: ["/usr/bin/supervisord", "--configuration=/opt/conf/slave.conf"]
+    networks:
+      - elastest
+
+  rest-api:
+    image: elastest/ebs:latest
+    depends_on:
+      - sparkmaster
+    container_name: restapi
+    environment:
+      - EBS_PORT=5000
+      - EBS_SPARK_MASTER_URL=http://sparkmaster:8080/
+    links:
+      - sparkmaster
+    ports:
+      - 5000:5000
+    networks:
+        - elastest
+
+networks:
+  elastest:
+    external: true
