@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -7,7 +8,7 @@ spec:
   template:
     metadata:
       labels:
-        app: edm-mysql
+        elastest-service: edm-mysql
     spec:
       containers:
       - env:
@@ -29,3 +30,17 @@ spec:
       - name: edm-mysql
         persistentVolumeClaim:
           claimName: edm-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edm-mysql
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    elastest-service: edm-mysql
+  type: ClusterIP
