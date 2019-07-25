@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: edm-elasticsearch
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        elastest-service: edm-elasticsearch
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: MYSQL_DATABASE
+          value: elastest
+        - name: MYSQL_PASSWORD
+          value: elastest
+        - name: MYSQL_USER
+          value: elastest
+        image: elastest/edm-elasticsearch:latest
+        name: edm-elasticsearch
+        volumeMounts:
+        - mountPath: /var/lib/elasticsearch
+          name: edm-elasticsearch
+      volumes:
+      - name: edm-elasticsearch
+        persistentVolumeClaim:
+          claimName: edm-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edm-elasticsearch
+spec:
+  ports:
+  - name: "9200"
+    port: 9200
+    targetPort: 9200
+  - name: "9300"
+    port: 9300
+    targetPort: 9300
+  selector:
+    elastest-service: edm-elasticsearch
+  type: ClusterIP

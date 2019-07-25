@@ -29,7 +29,7 @@ spec:
       volumes:
       - name: edm-mysql
         persistentVolumeClaim:
-          claimName: edm-data
+          claimName: edm-mysql-data
 
 ---
 apiVersion: v1

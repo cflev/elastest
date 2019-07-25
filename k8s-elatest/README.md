@@ -1,6 +1,6 @@
-Prepare the volumes for GKE:
+Create the GKE specific storage class:
 ```
-kubectl apply -f provider/gke/gke-storageclass.yaml
+kubectl apply -f provider/gke-storageclass.yaml
 ```
 
 Now create a namespace for elatest:
@@ -13,12 +13,17 @@ Change kubectl namespace context to it:
 kubectx elatest
 ```
 
-Create the volumes
+Create the volumes:
 ```
-kubectl apply -f provider/gke/edm-data-volume.yaml
+kubectl apply -f edm/edm-volumes.yaml
 ```
 
 Create MySQL
 ```
-kubectl apply -f edm/edm-mysql-deployment.yaml
+kubectl apply -f edm/edm-mysql.yaml
+```
+
+Cleanup:
+```
+kubectl delete namespaces elatest
 ```
