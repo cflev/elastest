@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: edm-mysql
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: edm-mysql
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: MYSQL_DATABASE
+          value: elastest
+        - name: MYSQL_PASSWORD
+          value: elastest
+        - name: MYSQL_USER
+          value: elastest
+        image: elastest/edm-mysql:latest
+        name: edm-mysql
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: edm-mysql
+      volumes:
+      - name: edm-mysql
+        persistentVolumeClaim:
+          claimName: edm-data
