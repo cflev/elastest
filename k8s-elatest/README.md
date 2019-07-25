@@ -17,3 +17,8 @@ Create the volumes
 ```
 kubectl apply -f provider/gke/edm-data-volume.yaml
 ```
+
+Create MySQL
+```
+kubectl apply -f edm/edm-mysql-deployment.yaml
+```
