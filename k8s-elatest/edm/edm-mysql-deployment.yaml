@@ -21,6 +21,7 @@ spec:
           value: elastest
         image: elastest/edm-mysql:latest
         name: edm-mysql
+        command: ['docker-entrypoint.sh', '--ignore-db-dir=lost+found']
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: edm-mysql
