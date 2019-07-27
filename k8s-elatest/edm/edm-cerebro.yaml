@@ -24,6 +24,8 @@ spec:
       labels:
         app: edm-cerebro
     spec:
+      securityContext:
+        fsGroup: 65533
       containers:
       - env:
         - name: ELASTICSEARCH_HOST
@@ -35,7 +37,7 @@ spec:
         - mountPath: /srv/cerebro/logs
           name: edm-cerebro-logs
         ports:
-        - containerPort: 9400
+        - containerPort: 9000
           protocol: TCP
         resources:
           limits:
@@ -51,6 +53,19 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
       terminationGracePeriodSeconds: 30
 status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edm-cerebro
+spec:
+  ports:
+  - name: "9400"
+    port: 9400
+    targetPort: 9000
+  selector:
+    elastest-service: edm-cerebro
+  type: ClusterIP
