@@ -1,0 +1,166 @@
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: edm-hadoop-hdfs-dn
+spec:
+  selector:
+    matchLabels:
+      elastest-service: hadoop-dn
+  minAvailable: 1
+
+
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: edm-hadoop-hdfs-dn
+spec:
+  serviceName: edm-hadoop-hdfs-dn
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        elastest-service: hadoop-dn
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  elastest-service: hadoop-dn
+      containers:
+      - name: hdfs-dn
+        image: "danisla/hadoop:2.9.0"
+        imagePullPolicy: "IfNotPresent"
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 50075
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 50075
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+        - name: dfs
+          mountPath: /root/hdfs/datanode
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: edm-hadoop
+      - name: dfs
+        emptyDir: {}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edm-hadoop-hdfs-dn
+spec:
+  ports:
+  - name: dfs
+    port: 9000
+    protocol: TCP
+  - name: webhdfs
+    port: 50075
+  clusterIP: None
+  selector:
+    elastest-service: hadoop-dn
+
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: edm-hadoop-hdfs-nn
+spec:
+  selector:
+    matchLabels:
+      elastest-service: hadoop-nn
+  minAvailable: 1
+
+
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: edm-hadoop-hdfs-nn
+spec:
+  serviceName: edm-hadoop-hdfs-nn
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        elastest-service: hadoop-nn
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  elastest-service: hadoop-nn
+      containers:
+      - name: hdfs-nn
+        image: "danisla/hadoop:2.9.0"
+        imagePullPolicy: "IfNotPresent"
+        command:
+        - "/bin/bash"
+        - "/tmp/hadoop-config/bootstrap.sh"
+        - "-d"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 50070
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 50070
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+        - name: dfs
+          mountPath: /root/hdfs/namenode
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: edm-hadoop
+      - name: dfs
+        emptyDir: {}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edm-hadoop-hdfs-nn
+spec:
+  ports:
+  - name: dfs
+    port: 9000
+    protocol: TCP
+  - name: webhdfs
+    port: 50070
+  clusterIP: None
+  selector:
+    elastest-service: hadoop-nn
