@@ -10,25 +10,29 @@ spec:
       labels:
         elastest-service: edm-elasticsearch
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - env:
-        - name: MYSQL_ALLOW_EMPTY_PASSWORD
-          value: "yes"
-        - name: MYSQL_DATABASE
-          value: elastest
-        - name: MYSQL_PASSWORD
-          value: elastest
-        - name: MYSQL_USER
-          value: elastest
+        - name: ES_JAVA_OPTS
+          value: -Xmx1g -Xms1g
+        - name: discovery.type
+          value: single-node
         image: elastest/edm-elasticsearch:latest
         name: edm-elasticsearch
         volumeMounts:
-        - mountPath: /var/lib/elasticsearch
-          name: edm-elasticsearch
+        - mountPath: /backup
+          name: esbackup
+        - mountPath: /usr/share/elasticsearch/data
+          name: esdata
+      hostname: edm-elasticsearch
       volumes:
-      - name: edm-elasticsearch
+      - name: esbackup
         persistentVolumeClaim:
-          claimName: edm-data
+          claimName: edm-es-backup
+      - name: esdata
+        persistentVolumeClaim:
+          claimName: edm-es-data
 
 ---
 apiVersion: v1
