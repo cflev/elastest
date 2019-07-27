@@ -38,4 +38,4 @@ spec:
     targetPort: 9400
   selector:
     elastest-service: edm-cerebro
-  type: LoadBalancer
+  type: ClusterIP

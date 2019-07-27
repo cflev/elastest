@@ -27,4 +27,4 @@ spec:
     targetPort: 8080
   selector:
     elastest-service: edm
-  type: LoadBalancer
+  type: ClusterIP

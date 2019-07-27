@@ -60,4 +60,4 @@ spec:
     targetPort: 5601
   selector:
     elastest-service: edm-kibana
-  type: LoadBalancer
+  type: ClusterIP

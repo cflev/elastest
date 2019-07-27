@@ -131,4 +131,4 @@ spec:
     name: web
   selector:
     elastest-service: hadoop-yarn-rm
-  type: LoadBalancer
+  type: ClusterIP
