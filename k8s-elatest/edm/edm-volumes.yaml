@@ -39,18 +39,7 @@ spec:
     requests:
       storage: 5Gi
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: edm-kibana
-spec:
-  storageClassName: faster
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+
 ## Cerebro conf
 #---
 #apiVersion: v1
@@ -64,9 +53,10 @@ spec:
 #  resources:
 #    requests:
 #      storage: 1Gi
-#status: {}
 #
 ## cerebro logs
+
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -79,4 +69,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
-status: {}
