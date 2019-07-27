@@ -5,7 +5,7 @@ metadata:
   name: edm-hadoop-hdfs-dn
 spec:
   serviceName: edm-hadoop-hdfs-dn
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -14,7 +14,6 @@ spec:
       containers:
       - name: hdfs-dn
         image: "danisla/hadoop:2.9.0"
-        imagePullPolicy: "IfNotPresent"
         command:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
@@ -34,14 +33,22 @@ spec:
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
-        - name: dfs
+        - name: edm-edfs-dn
           mountPath: /root/hdfs/datanode
       volumes:
       - name: hadoop-config
         configMap:
           name: edm-hadoop
-      - name: dfs
-        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: edm-edfs-dn
+    spec:
+      storageClassName: faster
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
 
 
 ---
@@ -68,7 +75,7 @@ metadata:
   name: edm-hadoop-hdfs-nn
 spec:
   serviceName: edm-hadoop-hdfs-nn
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -77,7 +84,6 @@ spec:
       containers:
       - name: hdfs-nn
         image: "danisla/hadoop:2.9.0"
-        imagePullPolicy: "IfNotPresent"
         command:
         - "/bin/bash"
         - "/tmp/hadoop-config/bootstrap.sh"
@@ -97,14 +103,22 @@ spec:
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
-        - name: dfs
+        - name: edm-edfs-nn
           mountPath: /root/hdfs/namenode
       volumes:
       - name: hadoop-config
         configMap:
           name: edm-hadoop
-      - name: dfs
-        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: edm-edfs-nn
+    spec:
+      storageClassName: faster
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
 
 
 ---
