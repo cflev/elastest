@@ -18,7 +18,7 @@ spec:
           value: zen
         - name: discovery.zen.ping.unicast.hosts
           value: edm-elasticsearch
-        image: elastest/edm-kibana:latest
+        image: docker.elastic.co/kibana/kibana-oss:6.2.4
         name: edm-kibana
         resources: {}
         volumeMounts:
@@ -39,22 +39,13 @@ metadata:
 data:
     kibana.yml: |
       ---
-      ## Default Kibana configuration from kibana-docker.
-      ## from https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana.yml
-      #
       server.name: edm-kibana
       server.host: "0"
+      #elasticsearch.hosts: http://edm-elasticsearch:9200
       elasticsearch.url: http://edm-elasticsearch:9200
 
       ## Disable X-Pack
-      ## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
-      ##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
-      #
-      xpack.security.enabled: false
-      xpack.monitoring.enabled: false
-      xpack.ml.enabled: false
-      xpack.graph.enabled: false
-      xpack.reporting.enabled: false
+      #xpack.monitoring.ui.container.elasticsearch.enabled: false
 
 
 ---
