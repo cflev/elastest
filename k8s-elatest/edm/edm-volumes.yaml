@@ -51,3 +51,32 @@ spec:
   resources:
     requests:
       storage: 1Gi
+## Cerebro conf
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: edm-cerebro-conf
+#spec:
+#  storageClassName: faster
+#  accessModes:
+#  - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 1Gi
+#status: {}
+#
+## cerebro logs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: edm-cerebro-logs
+spec:
+  storageClassName: faster
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+status: {}
