@@ -1,16 +1,4 @@
 ---
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: edm-hadoop-yarn-nm
-spec:
-  selector:
-    matchLabels:
-      elastest-service: hadoop-yarn-nm
-  minAvailable: 1
-
-
----
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -23,15 +11,6 @@ spec:
       labels:
         elastest-service: hadoop-yarn-nm
     spec:
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 5
-            podAffinityTerm:
-              topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  elastest-service: hadoop-yarn-nm
       containers:
       - name: yarn-nm
         image: "danisla/hadoop:2.9.0"
@@ -82,18 +61,6 @@ spec:
 
 
 ---
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: edm-hadoop-yarn-rm
-spec:
-  selector:
-    matchLabels:
-      elastest-service: hadoop-yarn-rm
-  minAvailable: 1
-
-
----
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -106,15 +73,6 @@ spec:
       labels:
         elastest-service: hadoop-yarn-rm
     spec:
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 5
-            podAffinityTerm:
-              topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  elastest-service: hadoop-yarn-rm
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-rm
