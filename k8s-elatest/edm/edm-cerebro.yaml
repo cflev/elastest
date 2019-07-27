@@ -35,7 +35,7 @@ spec:
   ports:
   - name: "9400"
     port: 9400
-    targetPort: 9000
+    targetPort: 9400
   selector:
     elastest-service: edm-cerebro
   type: LoadBalancer
