@@ -1,5 +1,11 @@
 # Cerebro
-install with helm:
+1. install with kubectl
+
+```
+kubectl apply -f edm-cerebro-volumes.yaml
+kubectl apply -f edm-cerebro-deployment.yaml
+```
+2. install with helm:
 ```
 cd helm
 helm install --name edm-cerebro .
