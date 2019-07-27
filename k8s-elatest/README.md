@@ -3,6 +3,11 @@ Create the GKE specific storage class:
 kubectl apply -f provider/gke-storageclass.yaml
 ```
 
+On GKE without this hack Elasticsearch will complain
+```
+kubectl apply -f gke-daemonset.yaml
+```
+
 Now create a namespace for elatest:
 ```
 kubectl create namespace elatest
@@ -18,9 +23,10 @@ Create the volumes:
 kubectl apply -f edm/edm-volumes.yaml
 ```
 
-Create MySQL
+Create services
 ```
 kubectl apply -f edm/edm-mysql.yaml
+kubectl apply -f edm/edm-elasticsearch.yaml
 ```
 
 Cleanup:
