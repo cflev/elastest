@@ -9,17 +9,15 @@
 # See the NOTICE file distributed with this work for information regarding copyright ownership.
 #
 
-kind: PersistentVolume
+---
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: alluxio-journal-volume
-  labels:
-    type: local
 spec:
-  storageClassName: standard
-  capacity:
-    storage: 1Gi
+  storageClassName: faster
   accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/tmp/data"
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
