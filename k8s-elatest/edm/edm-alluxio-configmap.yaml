@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  edm-alluxio-config
+data:
+    alluxio.properties: |
+
+       ALLUXIO_JAVA_OPTS=-Dalluxio.master.hostname=alluxio-master -Dalluxio.master.journal.type=UFS -Dalluxio.master.journal.folder=/journal -Dalluxio.master.mount.table.root.ufs=hdfs://edm-hadoop-yarn-nm:8082 -Dalluxio.worker.data.server.domain.socket.address=/opt/domain -Dalluxio.worker.data.server.domain.socket.as.uuid=true -Dalluxio.worker.memory.size=2GB -Dalluxio.master.rpc.port=20001 -Dalluxio.master.web.port=20000 -Dalluxio.worker.rpc.port=29999 -Dalluxio.worker.web.port=29996
