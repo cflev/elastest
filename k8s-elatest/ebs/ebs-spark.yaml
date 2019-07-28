@@ -1,0 +1,91 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ebs-spark-master
+spec:
+  ports:
+    - port: 7077
+      targetPort: 7077
+  selector:
+    elastest-service: ebs-spark-master
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ebs-spark-webui
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    elastest-service: ebs-spark-master
+  type: ClusterIP
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ebs-spark-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        elastest-service: ebs-spark-master
+    spec:
+      containers:
+        - name: ebs-spark-master
+          image: "k8s.gcr.io/spark:1.5.1_v3"
+          command: ["/bin/sh", "-c"]
+          args: ["echo $(hostname -i) ebs-master >> /etc/hosts; /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"]
+          ports:
+            - containerPort: 7077
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+          env:
+          - name: SPARK_DAEMON_MEMORY
+            value: "1g"
+          - name: SPARK_MASTER_HOST
+            value: ebs-master
+          - name: SPARK_MASTER_PORT
+            value: "7077"
+          - name: SPARK_MASTER_WEBUI_PORT
+            value: "8080"
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ebs-spark-worker
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        elastest-service: ebs-spark-spark-worker
+    spec:
+      containers:
+        - name: ebs-spark-worker
+          image: "k8s.gcr.io/spark:1.5.1_v3"
+          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://ebs-spark-master:7077"]
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+          env:
+          - name: SPARK_DAEMON_MEMORY
+            value: "1g"
+          - name: SPARK_WORKER_MEMORY
+            value: "1g"
+          - name: SPARK_WORKER_WEBUI_PORT
+            value: "8080"
