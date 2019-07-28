@@ -28,13 +28,15 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
-    if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-hdfs-nn" ]]; then
+      echo "Name Node detected!"
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
     fi
 
-    if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-hdfs-dn" ]]; then
+      echo "Data Node detected!"
       mkdir -p /root/hdfs/datanode
 
       #  wait up to 30 seconds for namenode
@@ -44,14 +46,16 @@ data:
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode
     fi
 
-    if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-yarn-rm" ]]; then
+      echo "Yarn RM Node detected!"
       cp ${CONFIG_DIR}/start-yarn-rm.sh $HADOOP_PREFIX/sbin/
       cd $HADOOP_PREFIX/sbin
       chmod +x start-yarn-rm.sh
       ./start-yarn-rm.sh
     fi
 
-    if [[ "${HOSTNAME}" =~ "yarn-nm" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-yarn-nm" ]]; then
+      echo "Yarn NM Node detected!"
       sed -i '/<\/configuration>/d' $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
       cat >> $HADOOP_PREFIX/etc/hadoop/yarn-site.xml <<- EOM
       <property>
