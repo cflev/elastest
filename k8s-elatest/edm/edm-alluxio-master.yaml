@@ -79,13 +79,6 @@ spec:
               mountPath: /journal
         - name: alluxio-job-master
           image: alluxio/alluxio:2.0.0
-          resources:
-            requests:
-              cpu: "0.5"
-              memory: "512M"
-            limits:
-              cpu: "1"
-              memory: "1024M"
           command: ["/entrypoint.sh"]
           args: ["job-master"]
           envFrom:
@@ -100,4 +93,4 @@ spec:
       volumes:
         - name: alluxio-journal
           persistentVolumeClaim:
-            claimName: alluxio-pv-claim
+            claimName: alluxio-journal-volume
