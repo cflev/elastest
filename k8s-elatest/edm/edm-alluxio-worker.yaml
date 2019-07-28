@@ -46,7 +46,7 @@ spec:
             value: " -Dalluxio.worker.hostname=$(ALLUXIO_WORKER_HOSTNAME) "
           envFrom:
           - configMapRef:
-              name: alluxio-config
+              name: edm-alluxio-config
           ports:
           - containerPort: 29998
             name: rpc
@@ -79,7 +79,7 @@ spec:
             value: " -Dalluxio.worker.hostname=$(ALLUXIO_WORKER_HOSTNAME) "
           envFrom:
           - configMapRef:
-              name: alluxio-config
+              name: edm-alluxio-config
           ports:
           - containerPort: 30001
             name: job-rpc
