@@ -6,7 +6,7 @@ metadata:
 data:
     ALLUXIO_CONFIG: |
 
-      ALLUXIO_MASTER_HOSTNAME=alluxio-master
+      ALLUXIO_MASTER_HOSTNAME=edm-alluxio-master
       ALLUXIO_MASTER_JOURNAL_FOLDER=/journal
       ALLUXIO_UNDERFS_ADDRESS=hdfs://edm-hadoop-hdfs-nn:9000
       ALLUXIO_WORKER_DATA_SERVER_DOMAIN_SOCKET_ADDRESS=/opt/domain/d
@@ -27,7 +27,7 @@ data:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: alluxio-journal-volume
+  name: edm-edm-alluxio-journal-volume
   labels:
     type: local
 spec:
@@ -58,9 +58,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: alluxio-master
+  name: edm-alluxio-master
   labels:
-    app: alluxio
+    app: edm-alluxio
 spec:
   ports:
   - port: 19998
@@ -69,13 +69,13 @@ spec:
     name: web
   clusterIP: None
   selector:
-    app: alluxio-master
+    app: edm-alluxio-master
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alluxio-pv-claim
+  name: edm-alluxio-pv-claim
 spec:
   accessModes:
     - ReadWriteMany
@@ -87,23 +87,23 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: alluxio-master
+  name: edm-alluxio-master
 spec:
   selector:
     matchLabels:
-      app: alluxio-master
-  serviceName: "alluxio-master"
+      app: edm-alluxio-master
+  serviceName: "edm-alluxio-master"
   replicas: 1
   template:
     metadata:
       labels:
-        app: alluxio-master
+        app: edm-alluxio-master
     spec:
       hostNetwork: true
       hostPID: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - name: alluxio-master
+        - name: edm-alluxio-master
           image: alluxio/alluxio:1.7.1
           resources:
             requests:
@@ -123,16 +123,16 @@ spec:
           - containerPort: 19999
             name: web
           volumeMounts:
-            - name: alluxio-journal
+            - name: edm-alluxio-journal
               mountPath: /journal
-            - name: alluxio-domain
+            - name: edm-alluxio-domain
               mountPath: /opt/domain
       restartPolicy: Always
       volumes:
-        - name: alluxio-journal
+        - name: edm-alluxio-journal
           persistentVolumeClaim:
-            claimName: alluxio-pv-claim
-        - name: alluxio-domain
+            claimName: edm-alluxio-pv-claim
+        - name: edm-alluxio-domain
           hostPath:
             path: /tmp/domain
             type: Directory
@@ -141,19 +141,19 @@ spec:
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: alluxio-worker
+  name: edm-alluxio-worker
 spec:
   template:
     metadata:
       labels:
-        name: alluxio-worker
-        app: alluxio
+        name: edm-alluxio-worker
+        app: edm-alluxio
     spec:
       hostNetwork: true
       hostPID: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - name: alluxio-worker
+        - name: edm-alluxio-worker
           image: alluxio/alluxio:1.7.1
           resources:
             requests:
@@ -182,17 +182,17 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
-            - name: alluxio-ramdisk
+            - name: edm-alluxio-ramdisk
               mountPath: /dev/shm
-            - name: alluxio-domain
+            - name: edm-alluxio-domain
               mountPath: /opt/domain
       restartPolicy: Always
       volumes:
-        - name: alluxio-ramdisk
+        - name: edm-alluxio-ramdisk
           emptyDir:
             medium: "Memory"
             sizeLimit: "1G"
-        - name: alluxio-domain
+        - name: edm-alluxio-domain
           hostPath:
             path: /tmp/domain
             type: Directory
