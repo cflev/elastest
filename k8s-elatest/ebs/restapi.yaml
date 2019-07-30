@@ -3,28 +3,28 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    service: ebs-rest-api
-  name: ebs-rest-api
+    service: restapi
+  name: restapi
 spec:
   ports:
   - name: "5000"
     port: 5000
     targetPort: 5000
   selector:
-    elastest-service: ebs
+    elastest-service: restapi
   type: ClusterIP
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ebs-rest-api
+  name: restapi
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        elastest-service: ebs
+        elastest-service: restapi
     spec:
       containers:
       - env:
@@ -33,4 +33,4 @@ spec:
         - name: EBS_SPARK_MASTER_URL
           value: http://ebs-sparkmaster:8080/
         image: elastest/ebs:latest
-        name: ebs-rest-api
+        name: restapi

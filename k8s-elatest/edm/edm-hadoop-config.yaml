@@ -28,7 +28,7 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
-    if [[ "${HOSTNAME}" =~ "edm-hadoop-hdfs-nn" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-nodename" ]]; then
       echo "Name Node detected!"
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
@@ -40,7 +40,7 @@ data:
       mkdir -p /root/hdfs/datanode
 
       #  wait up to 30 seconds for namenode
-      (while [[ $count -lt 15 && -z `curl -sf http://edm-hadoop-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for edm-hadoop-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
+      (while [[ $count -lt 15 && -z `curl -sf http://edm-hdfs-namenode:50070` ]]; do ((count=count+1)) ; echo "Waiting for edm-hadoop-nodename" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
 
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode
@@ -96,7 +96,7 @@ data:
     <configuration>
       <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://edm-hadoop-hdfs-nn:9000/</value>
+            <value>hdfs://edm-hadoop-nodename:9000/</value>
             <description>NameNode URI</description>
         </property>
     </configuration>

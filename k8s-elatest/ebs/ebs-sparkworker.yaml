@@ -9,7 +9,7 @@ spec:
     port: 8081
     targetPort: 8081
   selector:
-    elastest-service: ebs
+    elastest-service: ebs-sparkworker
 
 ---
 apiVersion: extensions/v1beta1
@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        elastest-service: ebs
+        elastest-service: ebs-sparkworker
     spec:
       containers:
       - image: elastest/ebs-spark:latest

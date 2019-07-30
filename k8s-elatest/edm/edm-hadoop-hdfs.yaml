@@ -125,7 +125,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: edm-hadoop-hdfs-nn
+#  name: edm-hadoop-hdfs-nn
+  name: edm-hdfs-namenode
 spec:
   ports:
   - name: dfs
