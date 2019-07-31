@@ -1,11 +1,36 @@
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: edm-edfs-nn-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: edm-edfs-dn-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+
+---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: edm-hadoop-hdfs-dn
 spec:
   serviceName: edm-hadoop-hdfs-dn
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -36,20 +61,12 @@ spec:
         - name: edm-edfs-dn
           mountPath: /root/hdfs/datanode
       volumes:
+      - name: edm-edfs-dn
+        persistentVolumeClaim:
+          claimName: edm-edfs-dn-pvc
       - name: hadoop-config
         configMap:
           name: edm-hadoop
-  volumeClaimTemplates:
-  - metadata:
-      name: edm-edfs-dn
-    spec:
-      storageClassName: faster
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
-
 
 ---
 apiVersion: v1
@@ -109,16 +126,9 @@ spec:
       - name: hadoop-config
         configMap:
           name: edm-hadoop
-  volumeClaimTemplates:
-  - metadata:
-      name: edm-edfs-nn
-    spec:
-      storageClassName: faster
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
+      - name: edm-edfs-nn
+        persistentVolumeClaim:
+          claimName: edm-edfs-nn-pvc
 
 
 ---
@@ -137,3 +147,4 @@ spec:
   clusterIP: None
   selector:
     elastest-service: hadoop-nn
+    
