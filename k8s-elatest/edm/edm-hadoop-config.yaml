@@ -28,7 +28,7 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
-    if [[ "${HOSTNAME}" =~ "edm-hadoop-nodename" ]]; then
+    if [[ "${HOSTNAME}" =~ "edm-hadoop-hdfs-nn" ]]; then
       echo "Name Node detected!"
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
