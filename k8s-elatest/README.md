@@ -1,35 +1,46 @@
-Create the GKE specific storage class:
+Install microk8s
+https://microk8s.io/
+
+Get latest files
 ```
-kubectl apply -f provider/gke-storageclass.yaml
+git clone https://github.com/cflev/elastest-single.git
 ```
 
-On GKE without this hack Elasticsearch will complain
-```
-kubectl apply -f gke-daemonset.yaml
-```
+Create /tmp/domain 
 
-Now create a namespace for elatest:
 ```
-kubectl create namespace elatest
+mkdir /tmp/domain
+```
+You need to create it every time you restart the node
+
+Create a new namespace
+```
+kubectl create namespace elatest-single
 ```
 
 Change kubectl namespace context to it:
 ```
 kubectx elatest
 ```
+* install kubectx from here: https://github.com/ahmetb/kubectx
 
-Create the volumes:
+go to edm directory and run all yaml files:
 ```
-kubectl apply -f edm/edm-volumes.yaml
+kubectl apply -f edm-volumes.yaml -f edm-mysql.yaml -f edm-elasticsearch.yaml -f edm-hadoop-config.yaml -f edm-hadoop-yarn.yaml -f edm-hadoop-hdfs.yaml -f edm-kibana.yaml -f edm-cerebro.yaml -f edm-alluxio.yaml -f edm.yaml
+```
+go to ebs directory and run all yaml files:
+```
+kubectl apply -f ebs-sparkmaster.yaml -f ebs-sparkworker.yaml -f restapi.yaml
 ```
 
-Create services
+get a bash shell to ebs-sparkmaster
 ```
-kubectl apply -f edm/edm-mysql.yaml
-kubectl apply -f edm/edm-elasticsearch.yaml
+kubectl exec -ti deployment.apps/ebs-sparkmaster bash
 ```
+
+Run tests!
 
 Cleanup:
 ```
-kubectl delete namespaces elatest
+kubectl delete namespaces elatest-single
 ```
