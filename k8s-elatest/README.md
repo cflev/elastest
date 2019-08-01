@@ -13,6 +13,14 @@ mkdir /tmp/domain
 ```
 You need to create it every time you restart the node
 
+add privileged permissions (--allow-privileged=true)
+```
+vi /var/snap/microk8s/current/args/kube-apiserver
+or
+echo "--allow-privileged=true" >> /var/snap/microk8s/current/args/kube-apiserver
+```
+Reboot or restart microk8s services
+
 Create a new namespace
 ```
 kubectl create namespace elatest-single
